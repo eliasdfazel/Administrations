@@ -131,7 +131,7 @@ class ManageUsers {
      * Retrieve Premium Storefront Users
      **/
     fun retrievePremiumStorefront() {
-        println("|:. Float It .:|")
+        println("|:. Premium Storefront .:|")
 
         try {
 
@@ -190,15 +190,15 @@ class ManageUsers {
      * Retrieve Arwen Users
      **/
     fun retrieveArwen() {
-        println("|:. Float It .:|")
+        println("|:. Arwen .:|")
 
         try {
 
-            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\floating-shortcuts-pro-firebase-adminsdk-qmni9-4ab2b1fd7a.json")
+            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\floating-ai-firebase-adminsdk-cglmq-2b057331be.json")
 
             val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://floating-shortcuts-pro.firebaseio.com")
+                .setDatabaseUrl("https://floating-ai-default-rtdb.firebaseio.com")
                 .build()
 
             FirebaseApp.initializeApp(firebaseOptions)
