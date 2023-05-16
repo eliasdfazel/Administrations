@@ -38,13 +38,22 @@ class ManageUsers {
                 for (exportedUserRecord in listUsersPage.values) {
 
                     //Email, First Name, Last Name
-                    val firstName = exportedUserRecord.displayName.split(" ").first()
-                    val lastName = exportedUserRecord.displayName.split(" ").last()
 
-                    customersContactInformation
-                        .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+                    var displayName = exportedUserRecord.displayName?:"ABC XYZ"
+                    displayName = displayName.replace(")", "")
+                    displayName = displayName.replace("(", "")
 
-                    println("${loopCounter}. " + "User: ${exportedUserRecord.email},${firstName},${lastName}")
+                    val firstName = displayName.split(" ").first()
+                    val lastName = displayName.split(" ").last()
+
+                    if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
+
+                        customersContactInformation
+                            .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+
+                    }
+
+                    println("${loopCounter}. " + "User: ${exportedUserRecord.email}; ${firstName} ${lastName}")
 
                     loopCounter++
 
@@ -88,13 +97,139 @@ class ManageUsers {
                 for (exportedUserRecord in listUsersPage.values) {
 
                     //Email, First Name, Last Name
-                    val firstName = exportedUserRecord.displayName.split(" ").first()
-                    val lastName = exportedUserRecord.displayName.split(" ").last()
+                    var displayName = exportedUserRecord.displayName?:"ABC XYZ"
+                    displayName = displayName.replace(")", "")
+                    displayName = displayName.replace("(", "")
 
-                    customersContactInformation
-                        .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+                    val firstName = displayName.split(" ").first()
+                    val lastName = displayName.split(" ").last()
+
+                    if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
+
+                        customersContactInformation
+                            .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+
+                    }
 
                     println("${loopCounter}. " + "User: ${exportedUserRecord.email},${firstName},${lastName}")
+
+                    loopCounter++
+
+                }
+
+                listUsersPage = listUsersPage.nextPage
+
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    /**
+     * Retrieve Premium Storefront Users
+     **/
+    fun retrievePremiumStorefront() {
+        println("|:. Float It .:|")
+
+        try {
+
+            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\premium-storefront-firebase-adminsdk-x8f6b-00a0d845e2.json")
+
+            val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setDatabaseUrl("https://premium-storefront-default-rtdb.firebaseio.com")
+                .build()
+
+            FirebaseApp.initializeApp(firebaseOptions)
+
+            var listUsersPage: ListUsersPage? = FirebaseAuth.getInstance().listUsers(null)
+
+            var loopCounter: Int = 0
+
+            val customersContactInformation: File = File("X:\\Administrator\\Users\\Customers_Contact_Information.csv")
+
+            while (listUsersPage != null) {
+
+                for (exportedUserRecord in listUsersPage.values) {
+
+                    //Email, First Name, Last Name
+
+                    var displayName = exportedUserRecord.displayName?:"ABC XYZ"
+                    displayName = displayName.replace(")", "")
+                    displayName = displayName.replace("(", "")
+
+                    val firstName = displayName.split(" ").first()
+                    val lastName = displayName.split(" ").last()
+
+                    if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
+
+                        customersContactInformation
+                            .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+
+                    }
+
+                    println("${loopCounter}. " + "User: ${exportedUserRecord.email}; ${firstName} ${lastName}")
+
+                    loopCounter++
+
+                }
+
+                listUsersPage = listUsersPage.nextPage
+
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    /**
+     * Retrieve Arwen Users
+     **/
+    fun retrieveArwen() {
+        println("|:. Float It .:|")
+
+        try {
+
+            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\floating-shortcuts-pro-firebase-adminsdk-qmni9-4ab2b1fd7a.json")
+
+            val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setDatabaseUrl("https://floating-shortcuts-pro.firebaseio.com")
+                .build()
+
+            FirebaseApp.initializeApp(firebaseOptions)
+
+            var listUsersPage: ListUsersPage? = FirebaseAuth.getInstance().listUsers(null)
+
+            var loopCounter: Int = 0
+
+            val customersContactInformation: File = File("X:\\Administrator\\Users\\Customers_Contact_Information.csv")
+
+            while (listUsersPage != null) {
+
+                for (exportedUserRecord in listUsersPage.values) {
+
+                    //Email, First Name, Last Name
+
+                    var displayName = exportedUserRecord.displayName?:"ABC XYZ"
+                    displayName = displayName.replace(")", "")
+                    displayName = displayName.replace("(", "")
+
+                    val firstName = displayName.split(" ").first()
+                    val lastName = displayName.split(" ").last()
+
+                    if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
+
+                        customersContactInformation
+                            .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+
+                    }
+
+                    println("${loopCounter}. " + "User: ${exportedUserRecord.email}; ${firstName} ${lastName}")
 
                     loopCounter++
 
