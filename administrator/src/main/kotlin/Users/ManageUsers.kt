@@ -18,7 +18,7 @@ class ManageUsers {
 
         try {
 
-            val serviceAccount = FileInputStream("X:\\Xemonstration\\Kotlin\\FirebaseAdministrator\\ProjectsKeys\\floating-shortcuts-pro-firebase-adminsdk-qmni9-92c8e32b57.json")
+            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\floating-shortcuts-pro-firebase-adminsdk-qmni9-4ab2b1fd7a.json")
 
             val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -31,22 +31,20 @@ class ManageUsers {
 
             var loopCounter: Int = 0
 
-            val customersContactInformation: File = File("X:\\Xemonstration\\Kotlin\\FirebaseAdministrator\\Customers_Contact_Information.csv")
-
-            if (!customersContactInformation.exists()) {
-
-                customersContactInformation.appendText("Email\n")
-
-            }
+            val customersContactInformation: File = File("X:\\Administrator\\Users\\Customers_Contact_Information.csv")
 
             while (listUsersPage != null) {
 
                 for (exportedUserRecord in listUsersPage.values) {
 
-                    println("${loopCounter}. " + "Email Address: " + exportedUserRecord.email)
+                    //Email, First Name, Last Name
+                    val firstName = exportedUserRecord.displayName.split(" ").first()
+                    val lastName = exportedUserRecord.displayName.split(" ").last()
 
                     customersContactInformation
-                        .appendText("${exportedUserRecord.email}\n")
+                        .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+
+                    println("${loopCounter}. " + "User: ${exportedUserRecord.email},${firstName},${lastName}")
 
                     loopCounter++
 
@@ -70,7 +68,7 @@ class ManageUsers {
 
         try {
 
-            val serviceAccount = FileInputStream("X:\\Xemonstration\\Kotlin\\FirebaseAdministrator\\ProjectsKeys\\super-shortcuts-pro-firebase-adminsdk-6euye-8efb5e4e3e.json")
+            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\super-shortcuts-pro-firebase-adminsdk-6euye-c2cd14877c.json")
 
             val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
@@ -83,22 +81,20 @@ class ManageUsers {
 
             var loopCounter: Int = 0
 
-            val customersContactInformation: File = File("X:\\Xemonstration\\Kotlin\\FirebaseAdministrator\\Customers_Contact_Information.csv")
-
-            if (!customersContactInformation.exists()) {
-
-                customersContactInformation.appendText("Email\n")
-
-            }
+            val customersContactInformation: File = File("X:\\Administrator\\Users\\Customers_Contact_Information.csv")
 
             while (listUsersPage != null) {
 
                 for (exportedUserRecord in listUsersPage.values) {
 
-                    println("${loopCounter}. " + "Email Address: " + exportedUserRecord.email)
+                    //Email, First Name, Last Name
+                    val firstName = exportedUserRecord.displayName.split(" ").first()
+                    val lastName = exportedUserRecord.displayName.split(" ").last()
 
                     customersContactInformation
-                        .appendText("${exportedUserRecord.email}\n")
+                        .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+
+                    println("${loopCounter}. " + "User: ${exportedUserRecord.email},${firstName},${lastName}")
 
                     loopCounter++
 
@@ -116,14 +112,23 @@ class ManageUsers {
 
     fun clearGeeksEmpireUsers() {
 
-        val serviceAccount = FileInputStream("path/to/serviceAccountKey.json")
+        val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\geeks-empire-website-firebase-adminsdk-ax89e-1159331875.json")
 
-        val options = FirebaseOptions.builder()
+        val firebaseOptions = FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(serviceAccount))
             .setDatabaseUrl("https://geeks-empire-website.firebaseio.com")
             .build()
 
-        FirebaseApp.initializeApp(options)
+        FirebaseApp.initializeApp(firebaseOptions)
+
+        val listUsersPage: ListUsersPage? = FirebaseAuth.getInstance().listUsers(null)
+
+        listUsersPage?.values?.forEach { exportedUserRecord ->
+            println("User To Delete: ${exportedUserRecord.email}")
+
+            FirebaseAuth.getInstance().deleteUser(exportedUserRecord.uid)
+
+        }
 
     }
 
