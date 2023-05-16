@@ -10,7 +10,10 @@ import java.io.FileInputStream
 
 class ManageUsers {
 
-    fun floatItProject() {
+    /**
+     * Retrieve Float It Users
+     **/
+    fun retrieveFloatIt() {
         println("|:. Float It .:|")
 
         try {
@@ -22,7 +25,7 @@ class ManageUsers {
                 .setDatabaseUrl("https://floating-shortcuts-pro.firebaseio.com")
                 .build()
 
-            FirebaseApp.initializeApp(firebaseOptions);
+            FirebaseApp.initializeApp(firebaseOptions)
 
             var listUsersPage: ListUsersPage? = FirebaseAuth.getInstance().listUsers(null)
 
@@ -59,7 +62,10 @@ class ManageUsers {
 
     }
 
-    fun superShortcutsProject() {
+    /**
+     * Retrieve Super Shortcuts Users
+     **/
+    fun retrieveSuperShortcuts() {
         println("|:. Super Shortcuts .:|")
 
         try {
@@ -105,6 +111,19 @@ class ManageUsers {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+    }
+
+    fun clearGeeksEmpireUsers() {
+
+        val serviceAccount = FileInputStream("path/to/serviceAccountKey.json")
+
+        val options = FirebaseOptions.builder()
+            .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+            .setDatabaseUrl("https://geeks-empire-website.firebaseio.com")
+            .build()
+
+        FirebaseApp.initializeApp(options)
 
     }
 
