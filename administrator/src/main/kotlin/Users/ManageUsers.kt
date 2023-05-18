@@ -1,5 +1,6 @@
 package Users
 
+import Users.Utils.formatCSV
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -37,8 +38,7 @@ class ManageUsers {
 
                 for (exportedUserRecord in listUsersPage.values) {
 
-                    //Email, First Name, Last Name
-
+                    //First Name, Last Name, Email
                     var displayName = exportedUserRecord.displayName?:"ABC XYZ"
                     displayName = displayName.replace(")", "")
                     displayName = displayName.replace("(", "")
@@ -49,11 +49,11 @@ class ManageUsers {
                     if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
 
                         customersContactInformation
-                            .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+                            .appendText("${formatCSV(firstName, lastName, exportedUserRecord.email)}\n")
 
                     }
 
-                    println("${loopCounter}. " + "User: ${exportedUserRecord.email}; ${firstName} ${lastName}")
+                    println("${loopCounter}. " + "User -> ${firstName} ${lastName}; ${exportedUserRecord.email}")
 
                     loopCounter++
 
@@ -96,7 +96,7 @@ class ManageUsers {
 
                 for (exportedUserRecord in listUsersPage.values) {
 
-                    //Email, First Name, Last Name
+                    //First Name, Last Name, Email
                     var displayName = exportedUserRecord.displayName?:"ABC XYZ"
                     displayName = displayName.replace(")", "")
                     displayName = displayName.replace("(", "")
@@ -107,11 +107,11 @@ class ManageUsers {
                     if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
 
                         customersContactInformation
-                            .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+                            .appendText("${formatCSV(firstName, lastName, exportedUserRecord.email)}\n")
 
                     }
 
-                    println("${loopCounter}. " + "User: ${exportedUserRecord.email},${firstName},${lastName}")
+                    println("${loopCounter}. " + "User -> ${firstName} ${lastName}; ${exportedUserRecord.email}")
 
                     loopCounter++
 
@@ -154,8 +154,7 @@ class ManageUsers {
 
                 for (exportedUserRecord in listUsersPage.values) {
 
-                    //Email, First Name, Last Name
-
+                    //First Name, Last Name, Email
                     var displayName = exportedUserRecord.displayName?:"ABC XYZ"
                     displayName = displayName.replace(")", "")
                     displayName = displayName.replace("(", "")
@@ -166,11 +165,11 @@ class ManageUsers {
                     if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
 
                         customersContactInformation
-                            .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+                            .appendText("${formatCSV(firstName, lastName, exportedUserRecord.email)}\n")
 
                     }
 
-                    println("${loopCounter}. " + "User: ${exportedUserRecord.email}; ${firstName} ${lastName}")
+                    println("${loopCounter}. " + "User -> ${firstName} ${lastName}; ${exportedUserRecord.email}")
 
                     loopCounter++
 
@@ -213,8 +212,7 @@ class ManageUsers {
 
                 for (exportedUserRecord in listUsersPage.values) {
 
-                    //Email, First Name, Last Name
-
+                    //First Name, Last Name, Email
                     var displayName = exportedUserRecord.displayName?:"ABC XYZ"
                     displayName = displayName.replace(")", "")
                     displayName = displayName.replace("(", "")
@@ -225,11 +223,11 @@ class ManageUsers {
                     if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
 
                         customersContactInformation
-                            .appendText("${exportedUserRecord.email},${firstName},${lastName}\n")
+                            .appendText("${formatCSV(firstName, lastName, exportedUserRecord.email)}\n")
 
                     }
 
-                    println("${loopCounter}. " + "User: ${exportedUserRecord.email}; ${firstName} ${lastName}")
+                    println("${loopCounter}. " + "User -> ${firstName} ${lastName}; ${exportedUserRecord.email}")
 
                     loopCounter++
 
