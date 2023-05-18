@@ -11,6 +11,18 @@ import java.io.FileInputStream
 
 class ManageUsers {
 
+    init {
+
+        val customersContactInformation: File = File("X:\\Administrator\\Users\\Customers_Contact_Information.csv")
+
+        if (!customersContactInformation.exists()) {
+
+            customersContactInformation.appendText("\"Email\",\"First Name\",\"Last Name\"")
+
+        }
+
+    }
+
     /**
      * Retrieve Float It Users
      **/
