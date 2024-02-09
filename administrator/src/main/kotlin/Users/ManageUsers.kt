@@ -19,6 +19,15 @@ class ManageUsers {
 
     }
 
+    fun removeDupliacted() {
+
+        FirebaseAuth.getInstance(FirebaseApp.initializeApp(FirebaseOptions.builder()
+            .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\arwen-multitasking-administrator.json")))
+            .setDatabaseUrl("https://arwen-multitasking.firebaseio.com")
+            .build(), System.currentTimeMillis().toString())).tenantManager.
+
+    }
+
     fun importAllUsers() {
 
         try {
@@ -50,6 +59,7 @@ class ManageUsers {
 
                         allUsers.add(ImportUserRecord.builder()
                             .setUid(exportedUserRecord.uid)
+                            .setEmail(exportedUserRecord.email)
                             .addUserProvider(UserProvider.builder() // user with Google provider
                                 .setUid(exportedUserRecord.uid)
                                 .setEmail(exportedUserRecord.email)
