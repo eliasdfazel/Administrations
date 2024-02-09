@@ -24,11 +24,11 @@ class ManageUsers {
 
         try {
 
-            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\floating-shortcuts-pro-firebase-adminsdk-qmni9-4ab2b1fd7a.json")
+            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\floating-ai-firebase-adminsdk-cglmq-2b057331be.json")
 
             val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://floating-shortcuts-pro.firebaseio.com")
+                .setDatabaseUrl("https://floating-ai-default-rtdb.firebaseio.com")
                 .build()
 
             FirebaseApp.initializeApp(firebaseOptions)
@@ -66,70 +66,18 @@ class ManageUsers {
 
                 }
 
-                println("All Users: ${allUsers.size}}")
+                println("All Users: ${allUsers.size}")
 
                 val userImportResult  = FirebaseAuth.getInstance(FirebaseApp.initializeApp(FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\arwen-multitasking-administrator.json")))
                     .setDatabaseUrl("https://arwen-multitasking.firebaseio.com")
-                    .build(), "Arwen")).importUsers(allUsers)
+                    .build(), System.currentTimeMillis().toString())).importUsers(allUsers)
 
                 for (indexedError in userImportResult.errors) {
                     println("Failed to import user: " + indexedError.reason)
                 }
 
                 allUsers.clear()
-
-                listUsersPage = listUsersPage.nextPage
-
-            }
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    fun retrieveAllUsers() {
-        println("|:. Arwen Multitasking .:|")
-
-        try {
-
-            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\floating-shortcuts-pro-firebase-adminsdk-qmni9-4ab2b1fd7a.json")
-
-            val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://floating-shortcuts-pro.firebaseio.com")
-                .build()
-
-            FirebaseApp.initializeApp(firebaseOptions)
-
-            var listUsersPage: ListUsersPage? = FirebaseAuth.getInstance().listUsers(null)
-
-            var loopCounter: Int = 0
-
-            val customersContactInformation: File = File("X:\\Administrator\\Users\\ArwenMultitasking.csv")
-
-            while (listUsersPage != null) {
-
-                for (exportedUserRecord in listUsersPage.values) {
-
-                    //uniqueId, displayName, emailAddress, photoUrl
-                    var displayName = exportedUserRecord.displayName?:"ABC XYZ"
-                    displayName = displayName.replace(")", "")
-                    displayName = displayName.replace("(", "")
-
-                    if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
-
-                        customersContactInformation
-                            .appendText("${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl?:"https://play-lh.googleusercontent.com/-b4QAiBSRT2QMay7uaga7Ia4SbO-1kdyXCGzc_fHAUux3ntC2oxPEc44O3mPxqb04dg=s94")}\n")
-
-                    }
-
-                    println("${loopCounter}. " + "User -> ${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl?:"https://play-lh.googleusercontent.com/-b4QAiBSRT2QMay7uaga7Ia4SbO-1kdyXCGzc_fHAUux3ntC2oxPEc44O3mPxqb04dg=s94")}")
-
-                    loopCounter++
-
-                }
 
                 listUsersPage = listUsersPage.nextPage
 
