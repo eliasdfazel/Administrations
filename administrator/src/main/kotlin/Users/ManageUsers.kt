@@ -13,12 +13,58 @@ class ManageUsers {
 
     init {
 
-        val customersContactInformation: File = File("X:\\Administrator\\Users\\Customers_Contact_Information.csv")
+        val customersContactInformation: File = File("X:\\Administrator\\Users\\ArwenMultitasking.csv")
 
-        if (!customersContactInformation.exists()) {
+    }
 
-            customersContactInformation.appendText("\"Email\",\"First Name\",\"Last Name\"")
+    fun retrieveAllUsers() {
+        println("|:. Arwen Multitasking .:|")
 
+        try {
+
+            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\floating-shortcuts-pro-firebase-adminsdk-qmni9-4ab2b1fd7a.json")
+
+            val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setDatabaseUrl("https://floating-shortcuts-pro.firebaseio.com")
+                .build()
+
+            FirebaseApp.initializeApp(firebaseOptions)
+
+            var listUsersPage: ListUsersPage? = FirebaseAuth.getInstance().listUsers(null)
+
+            var loopCounter: Int = 0
+
+            val customersContactInformation: File = File("X:\\Administrator\\Users\\ArwenMultitasking.csv")
+
+            while (listUsersPage != null) {
+
+                for (exportedUserRecord in listUsersPage.values) {
+
+                    //First Name, Last Name, Email
+                    var displayName = exportedUserRecord.displayName?:"ABC XYZ"
+                    displayName = displayName.replace(")", "")
+                    displayName = displayName.replace("(", "")
+
+                    if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
+
+                        customersContactInformation
+                            .appendText("${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl?:"")}\n")
+
+                    }
+
+                    println("${loopCounter}. " + "User -> ${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl)}")
+
+                    loopCounter++
+
+                }
+
+                listUsersPage = listUsersPage.nextPage
+
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
     }
