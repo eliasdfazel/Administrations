@@ -4,7 +4,7 @@ fun main(args: Array<String>) {
 
     val manageUsers: ManageUsers = ManageUsers()
 
-    manageUsers.retrieveAllUsers()
+    manageUsers.importAllUsers()
 
 //    manageUsers.retrieveFloatIt()
 //    manageUsers.retrieveSuperShortcuts()

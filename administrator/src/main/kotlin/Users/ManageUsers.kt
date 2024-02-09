@@ -5,15 +5,87 @@ import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ImportUserRecord
 import com.google.firebase.auth.ListUsersPage
+import com.google.firebase.auth.UserProvider
 import java.io.File
 import java.io.FileInputStream
+
 
 class ManageUsers {
 
     init {
 
         val customersContactInformation: File = File("X:\\Administrator\\Users\\ArwenMultitasking.csv")
+
+    }
+
+    fun importAllUsers() {
+
+        try {
+
+            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\floating-shortcuts-pro-firebase-adminsdk-qmni9-4ab2b1fd7a.json")
+
+            val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setDatabaseUrl("https://floating-shortcuts-pro.firebaseio.com")
+                .build()
+
+            FirebaseApp.initializeApp(firebaseOptions)
+
+            var listUsersPage: ListUsersPage? = FirebaseAuth.getInstance().listUsers(null)
+
+            val allUsers = ArrayList<ImportUserRecord>()
+
+            while (listUsersPage != null) {
+
+                for (exportedUserRecord in listUsersPage.values) {
+
+                    //uniqueId, displayName, emailAddress, photoUrl
+                    var displayName = exportedUserRecord.displayName?:"ABC XYZ"
+                    displayName = displayName.replace(")", "")
+                    displayName = displayName.replace("(", "")
+
+                    if (!exportedUserRecord.email.contains("cloudtestlabaccounts")
+                        && !exportedUserRecord.uid.isNullOrEmpty()) {
+
+                        allUsers.add(ImportUserRecord.builder()
+                            .setUid(exportedUserRecord.uid)
+                            .addUserProvider(UserProvider.builder() // user with Google provider
+                                .setUid(exportedUserRecord.uid)
+                                .setEmail(exportedUserRecord.email)
+                                .setDisplayName(displayName)
+                                .setPhotoUrl(exportedUserRecord.photoUrl?:"https://play-lh.googleusercontent.com/-b4QAiBSRT2QMay7uaga7Ia4SbO-1kdyXCGzc_fHAUux3ntC2oxPEc44O3mPxqb04dg=s94")
+                                .setProviderId("google.com")
+                                .build())
+                            .build())
+
+                        println("User -> ${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl?:"https://play-lh.googleusercontent.com/-b4QAiBSRT2QMay7uaga7Ia4SbO-1kdyXCGzc_fHAUux3ntC2oxPEc44O3mPxqb04dg=s94")}")
+
+                    }
+
+                }
+
+                println("All Users: ${allUsers.size}}")
+
+                val userImportResult  = FirebaseAuth.getInstance(FirebaseApp.initializeApp(FirebaseOptions.builder()
+                    .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\arwen-multitasking-administrator.json")))
+                    .setDatabaseUrl("https://arwen-multitasking.firebaseio.com")
+                    .build(), "Arwen")).importUsers(allUsers)
+
+                for (indexedError in userImportResult.errors) {
+                    println("Failed to import user: " + indexedError.reason)
+                }
+
+                allUsers.clear()
+
+                listUsersPage = listUsersPage.nextPage
+
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
     }
 
@@ -41,7 +113,7 @@ class ManageUsers {
 
                 for (exportedUserRecord in listUsersPage.values) {
 
-                    //First Name, Last Name, Email
+                    //uniqueId, displayName, emailAddress, photoUrl
                     var displayName = exportedUserRecord.displayName?:"ABC XYZ"
                     displayName = displayName.replace(")", "")
                     displayName = displayName.replace("(", "")
@@ -49,11 +121,11 @@ class ManageUsers {
                     if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
 
                         customersContactInformation
-                            .appendText("${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl?:"")}\n")
+                            .appendText("${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl?:"https://play-lh.googleusercontent.com/-b4QAiBSRT2QMay7uaga7Ia4SbO-1kdyXCGzc_fHAUux3ntC2oxPEc44O3mPxqb04dg=s94")}\n")
 
                     }
 
-                    println("${loopCounter}. " + "User -> ${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl)}")
+                    println("${loopCounter}. " + "User -> ${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl?:"https://play-lh.googleusercontent.com/-b4QAiBSRT2QMay7uaga7Ia4SbO-1kdyXCGzc_fHAUux3ntC2oxPEc44O3mPxqb04dg=s94")}")
 
                     loopCounter++
 
