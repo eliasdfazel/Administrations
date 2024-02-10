@@ -4,10 +4,7 @@ import Users.Utils.formatCSV
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ImportUserRecord
-import com.google.firebase.auth.ListUsersPage
-import com.google.firebase.auth.UserProvider
+import com.google.firebase.auth.*
 import java.io.File
 import java.io.FileInputStream
 
@@ -19,12 +16,32 @@ class ManageUsers {
 
     }
 
-    fun removeDupliacted() {
+    fun deleteAllUsers() {
 
-        FirebaseAuth.getInstance(FirebaseApp.initializeApp(FirebaseOptions.builder()
+        FirebaseApp.initializeApp(FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\arwen-multitasking-administrator.json")))
             .setDatabaseUrl("https://arwen-multitasking.firebaseio.com")
-            .build(), System.currentTimeMillis().toString())).tenantManager.
+            .build())
+
+        var listUsersPage: ListUsersPage? = FirebaseAuth.getInstance().listUsers(null)
+
+        val allUsers = ArrayList<String>()
+
+        while (listUsersPage != null) {
+
+            for (exportedUserRecord in listUsersPage.values) {
+
+                allUsers.add(exportedUserRecord.uid)
+
+            }
+
+            FirebaseAuth.getInstance().deleteUsers(allUsers)
+
+            allUsers.clear()
+
+            listUsersPage = listUsersPage.nextPage
+
+        }
 
     }
 
@@ -32,14 +49,20 @@ class ManageUsers {
 
         try {
 
-            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\floating-ai-firebase-adminsdk-cglmq-2b057331be.json")
-
-            val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("https://floating-ai-default-rtdb.firebaseio.com")
-                .build()
-
-            FirebaseApp.initializeApp(firebaseOptions)
+//            FirebaseApp.initializeApp(FirebaseOptions.builder()
+//                .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\floating-shortcuts-pro-firebase-adminsdk-qmni9-4ab2b1fd7a.json")))
+//                .setDatabaseUrl("https://floating-shortcuts-pro.firebaseio.com")
+//                .build())
+//
+//            FirebaseApp.initializeApp(FirebaseOptions.builder()
+//                .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\floating-ai-firebase-adminsdk-cglmq-2b057331be.json")))
+//                .setDatabaseUrl("https://floating-ai-default-rtdb.firebaseio.com")
+//                .build())
+//
+            FirebaseApp.initializeApp(FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\super-shortcuts-pro-firebase-adminsdk-6euye-c2cd14877c.json")))
+                .setDatabaseUrl("https://super-shortcuts-pro.firebaseio.com")
+                .build())
 
             var listUsersPage: ListUsersPage? = FirebaseAuth.getInstance().listUsers(null)
 
@@ -54,22 +77,38 @@ class ManageUsers {
                     displayName = displayName.replace(")", "")
                     displayName = displayName.replace("(", "")
 
-                    if (!exportedUserRecord.email.contains("cloudtestlabaccounts")
-                        && !exportedUserRecord.uid.isNullOrEmpty()) {
+                    if (!exportedUserRecord.email.contains("cloudtestlabaccounts")) {
 
-                        allUsers.add(ImportUserRecord.builder()
-                            .setUid(exportedUserRecord.uid)
-                            .setEmail(exportedUserRecord.email)
-                            .addUserProvider(UserProvider.builder() // user with Google provider
+                        val existedUser: UserRecord? = try {
+
+                            FirebaseAuth.getInstance(FirebaseApp.initializeApp(FirebaseOptions.builder()
+                                .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\arwen-multitasking-administrator.json")))
+                                .setDatabaseUrl("https://arwen-multitasking.firebaseio.com")
+                                .build(), System.currentTimeMillis().toString())).getUserByEmail(exportedUserRecord.email)
+
+                        } catch (e: FirebaseAuthException) {
+
+                            null
+
+                        }
+
+                        if (exportedUserRecord.email != (existedUser?.email ?: "")) {
+
+                            println("User -> ${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl?:"https://play-lh.googleusercontent.com/-b4QAiBSRT2QMay7uaga7Ia4SbO-1kdyXCGzc_fHAUux3ntC2oxPEc44O3mPxqb04dg=s94")}")
+
+                            allUsers.add(ImportUserRecord.builder()
                                 .setUid(exportedUserRecord.uid)
                                 .setEmail(exportedUserRecord.email)
-                                .setDisplayName(displayName)
-                                .setPhotoUrl(exportedUserRecord.photoUrl?:"https://play-lh.googleusercontent.com/-b4QAiBSRT2QMay7uaga7Ia4SbO-1kdyXCGzc_fHAUux3ntC2oxPEc44O3mPxqb04dg=s94")
-                                .setProviderId("google.com")
+                                .addUserProvider(UserProvider.builder()
+                                    .setUid(exportedUserRecord.uid)
+                                    .setEmail(exportedUserRecord.email)
+                                    .setDisplayName(displayName)
+                                    .setPhotoUrl(exportedUserRecord.photoUrl?:"https://play-lh.googleusercontent.com/-b4QAiBSRT2QMay7uaga7Ia4SbO-1kdyXCGzc_fHAUux3ntC2oxPEc44O3mPxqb04dg=s94")
+                                    .setProviderId("google.com")
+                                    .build())
                                 .build())
-                            .build())
 
-                        println("User -> ${formatCSV(exportedUserRecord.uid, displayName, exportedUserRecord.email, exportedUserRecord.photoUrl?:"https://play-lh.googleusercontent.com/-b4QAiBSRT2QMay7uaga7Ia4SbO-1kdyXCGzc_fHAUux3ntC2oxPEc44O3mPxqb04dg=s94")}")
+                        }
 
                     }
 
@@ -77,13 +116,17 @@ class ManageUsers {
 
                 println("All Users: ${allUsers.size}")
 
-                val userImportResult  = FirebaseAuth.getInstance(FirebaseApp.initializeApp(FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\arwen-multitasking-administrator.json")))
-                    .setDatabaseUrl("https://arwen-multitasking.firebaseio.com")
-                    .build(), System.currentTimeMillis().toString())).importUsers(allUsers)
+                if (allUsers.isNotEmpty()) {
 
-                for (indexedError in userImportResult.errors) {
-                    println("Failed to import user: " + indexedError.reason)
+                    val userImportResult  = FirebaseAuth.getInstance(FirebaseApp.initializeApp(FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\arwen-multitasking-administrator.json")))
+                        .setDatabaseUrl("https://arwen-multitasking.firebaseio.com")
+                        .build(), System.currentTimeMillis().toString())).importUsers(allUsers)
+
+                    for (indexedError in userImportResult.errors) {
+                        println("Failed to import user: " + indexedError.reason)
+                    }
+
                 }
 
                 allUsers.clear()
@@ -164,14 +207,10 @@ class ManageUsers {
 
         try {
 
-            val serviceAccount = FileInputStream("X:\\Administrator\\Tokens\\super-shortcuts-pro-firebase-adminsdk-6euye-c2cd14877c.json")
-
-            val firebaseOptions: FirebaseOptions = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+            FirebaseApp.initializeApp(FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(FileInputStream("X:\\Administrator\\Tokens\\super-shortcuts-pro-firebase-adminsdk-6euye-c2cd14877c.json")))
                 .setDatabaseUrl("https://super-shortcuts-pro.firebaseio.com")
-                .build()
-
-            FirebaseApp.initializeApp(firebaseOptions);
+                .build())
 
             var listUsersPage: ListUsersPage? = FirebaseAuth.getInstance().listUsers(null)
 
