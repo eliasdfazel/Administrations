@@ -10,10 +10,10 @@ import java.net.URL
 
 class WoocommerceRetrieve {
 
-    fun retrieveCategories() {
+    fun retrieveCategories(pageNumber: Int = 1) {
 
         val url = URL("https://geeksempire.co/wp-json/wc/v3/products/categories?consumer_key=ck_e469d717bd778da4fb9ec24881ee589d9b202662&consumer_secret=cs_ac53c1b36d1a85e36a362855d83af93f0d377686" +
-                "&per_page=99&orderby=id&order=desc")
+                "&per_page=100&orderby=id&order=desc&page=${pageNumber}")
 
         with(url.openConnection() as HttpURLConnection) {
             requestMethod = "GET"
