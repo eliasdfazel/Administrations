@@ -1,5 +1,8 @@
 package Woocommerce
 
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.jsonObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -30,7 +33,14 @@ class WoocommerceRetrieve {
 
                 it.close()
 
-                println(response)
+                val jsonResponse = Json.parseToJsonElement(response.toString()) as JsonArray
+
+                jsonResponse.forEach { jsonElement ->
+
+                    val categorySlug = jsonElement.jsonObject["slug"]
+                    println("Category Slug: ${categorySlug}")
+
+                }
 
             }
         }
@@ -60,6 +70,7 @@ class WoocommerceRetrieve {
 
                 it.close()
 
+                val jsonResponse = Json.parseToJsonElement(response.toString())
 
 
             }

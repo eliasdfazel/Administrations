@@ -12,7 +12,9 @@ repositories {
 
 dependencies {
 
-    implementation ("com.google.firebase:firebase-admin:9.1.1")
+    implementation ("com.google.firebase:firebase-admin:9.3.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0-RC")
 
     testImplementation(kotlin("test"))
     implementation(kotlin("stdlib-jdk8"))

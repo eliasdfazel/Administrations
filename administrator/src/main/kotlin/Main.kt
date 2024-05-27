@@ -1,5 +1,7 @@
+import Woocommerce.WoocommerceRetrieve
+
 fun main(args: Array<String>) {
 
-    // Get All
+    WoocommerceRetrieve().retrieveCategories()
 
 }
